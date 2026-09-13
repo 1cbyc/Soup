@@ -152,7 +152,7 @@ soup migrate --from llamafactory config.yaml  Import config from LLaMA-Factory
 soup migrate --from axolotl config.yml        Import config from Axolotl
 soup migrate --from unsloth notebook.ipynb    Import config from Unsloth notebook
 soup migrate --from llamafactory c.yaml --dry-run  Preview without writing
-soup recipes list                             List all 167 ready-made recipes
+soup recipes list                             List all 169 ready-made recipes
 soup recipes show llama3.1-8b-sft            Print recipe YAML
 soup recipes use llama3.1-8b-sft             Copy recipe to soup.yaml
 soup recipes search "reasoning"              Search by keyword/task/size
@@ -241,7 +241,7 @@ soup audit-log tail / rotate  Tail / rotate the per-command HIPAA/SOC2 audit log
 soup --no-audit-log <cmd> / SOUP_NO_AUDIT_LOG=1  Opt out of the per-command audit line
 soup eval unlearning <run-id> --benchmark tofu|muse|wmdp  Forget Quality + Model Utility + PrivLeak verdict
 soup edit set --base <m> --method rome|memit|alphaedit|grace --subject "..." --target "..." [--output <dir>] [--device cpu] [--governor/--no-governor] [--registry-id <id>] [--cov-corpus <jsonl|txt>]  Live surgical knowledge edit (GPT-2 Conv1D + Llama; --cov-corpus = covariance-preconditioned ROME, rome-only; --plan-only available)
-soup edit diff <before-run> <after-run> --probes p.jsonl [--before-model <m> --after-model <m>]  Knowledge-injection diff (live before/after generation when both models given)
+soup edit diff <before-run> <after-run> --probes p.jsonl --before-model <m> --after-model <m>  Knowledge-injection diff (live before/after generation across probe prompts)
 soup train  # task: unlearn  NPO/SimNPO/RMU unlearning from data.forget_set (+ optional data.retain_set)
 soup train  # data.format='raft'  Answer-only span-mask RAFT training (golden+distractor docs, [doc-N] citations); generator-stage configs auto-link the latest RA-DIT retriever
 soup ra-dit --retriever-config <r.yaml> --generator-config <g.yaml> [--retriever-model <m>] [--plan-only]  One-shot two-stage RA-DIT: train retriever → record pairing → train generator

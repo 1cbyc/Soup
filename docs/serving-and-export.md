@@ -281,9 +281,11 @@ soup serve --model ./output --backend vllm --max-model-len 8192
 > **Tip:** Soup auto-detects vLLM. When installed, you'll see a hint during `soup serve` if you haven't enabled it yet.
 
 The vLLM backend applies the **model's own chat template**, exactly like the
-transformers backend — both call one shared prompt builder. A model that ships
-no chat template falls back to a generic `User:` / `Assistant:` prompt, and the
-server says so at startup. `finish_reason` reports `"length"` when a response
+transformers backend, and encodes the rendered prompt itself so the engine
+receives the same token ids Soup trains on rather than re-tokenizing the string.
+(The SGLang and MII backends still hand the engine the rendered string; see
+#785.) A model that ships no chat template falls back to a generic `User:` /
+`Assistant:` prompt, and the server says so at startup. `finish_reason` reports `"length"` when a response
 hits `max_tokens` and `"stop"` otherwise (`/v1/messages` maps those to
 `max_tokens` / `end_turn`).
 
@@ -546,7 +548,7 @@ soup ui
 
 **Pages:**
 - **Dashboard** — view all experiment runs, loss charts, system info, multi-run comparison
-- **New Training** — create configs from templates or 167 ready-made recipes, validate, start training with live SSE log streaming and progress bar
+- **New Training** — create configs from templates or 169 ready-made recipes, validate, start training with live SSE log streaming and progress bar
 - **Data Explorer** — browse and inspect datasets (JSONL, JSON, CSV, Parquet)
 - **Model Chat** — chat with streaming responses, configurable temperature/top_p/max_tokens, system prompt, adapter selection, markdown rendering, chat export
 
@@ -555,7 +557,7 @@ soup ui
 - **Enhanced Metrics** — 2x2 chart grid (loss, LR, grad_norm, throughput) + GPU memory chart, eval results table
 - **Multi-Run Compare** — overlay loss curves from up to 5 runs side-by-side
 - **Chat Upgrade** — SSE streaming via proxy, typing indicator, cancel button, markdown renderer (bold, italic, code blocks), chat export as JSON
-- **Config Builder** — recipe dropdown (167 recipes), config schema API for dynamic form generation
+- **Config Builder** — recipe dropdown (169 recipes), config schema API for dynamic form generation
 
 **Security:** The Web UI generates a random auth token at startup (printed to console). Every private endpoint — mutating (start/stop training, delete runs, inspect data, validate config) and reading (runs, metrics, system, recipes, SSE streams) — requires an `Authorization: Bearer <token>` header. `/` and `/api/health` stay open so the dashboard can load. CORS is restricted to the served origin. Data inspection is sandboxed to the working directory.
 
