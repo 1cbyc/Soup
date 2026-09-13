@@ -313,8 +313,26 @@ def test_mcp_refusals_do_not_echo_evidence_content(tmp_path, monkeypatch, payloa
         # `repr()` always balances its quotes, so the decoder cannot emit this
         # today — but the boundary must not fail open if one ever does.
         ("unterminated 'PWNED", "unterminated <redacted> (ValueError)"),
+        # A value holding BOTH quote characters: repr() delimits with single
+        # quotes and escapes the internal ones, so a regex that pairs on bare
+        # quotes slips by one and leaks the text between them (#758 review).
+        (
+            repr("a'LEAKED'b\"") + " needs 'x'",
+            "<redacted> needs <redacted> (ValueError)",
+        ),
+        (
+            repr('a"LEAKED"b') + " bad",
+            "<redacted> bad (ValueError)",
+        ),
     ),
-    ids=("fully-quoted", "empty-message", "double-quoted", "unterminated-quote"),
+    ids=(
+        "fully-quoted",
+        "empty-message",
+        "double-quoted",
+        "unterminated-quote",
+        "both-quote-types",
+        "double-inside-single",
+    ),
 )
 def test_mcp_error_sanitizer_never_returns_an_empty_message(raw, expected):
     """A decoder message that is entirely quoted must not redact down to nothing."""
